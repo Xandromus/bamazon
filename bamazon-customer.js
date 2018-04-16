@@ -85,14 +85,6 @@ let connection = mysql.createConnection({
 //     });
 // }
 
-function displayAllItems() {
-    connection.query("SELECT * FROM products", function (err, res) {
-        for (var i = 0; i < res.length; i++) {
-            console.log("\n" + "-".repeat(100) + "\n" + res[i].product_name + "\nItem#: " + res[i].item_id + "\n\nPrice: " + "$" + res[i].price.toFixed(2) + "\n" + "-".repeat(100));
-        }
-    });
-}
-
 // function querySongsByGenre() {
 //     inquirer.prompt([
 //         {
@@ -172,14 +164,28 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     displayAllItems();
+});
+
+
+
+function displayAllItems() {
+    connection.query("SELECT * FROM products", function (err, res) {
+        for (var i = 0; i < res.length; i++) {
+            console.log("\n || " + res[i].product_name + " || Item#: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2));
+        }
+        purchaseItem();
+    });
+}
+
+function purchaseItem() {
     inquirer.prompt([
         {
             name: "productId",
-            message: "Please enter the ID of the product you'd like to purchase"
+            message: "\nPlease enter the ID of the product you'd like to purchase"
         },
         {
             name: "quantity",
-            message: "How many would you like to purchase?"
+            message: "\nHow many would you like to purchase?"
         }
     ]).then(function (input) {
         let query = connection.query("SELECT * FROM products WHERE item_id=?", input.productId, function (err, res) {
@@ -197,21 +203,9 @@ connection.connect(function (err) {
                         }
                     ]
                 );
-                console.log("The total cost for your purchase is $" + (input.quantity * res[0].price).toFixed(2));
+                console.log("\nThe total cost for your purchase is $" + (input.quantity * res[0].price).toFixed(2));
+                connection.end();
             }
         });
     });
-});
-
-function exitHandler(options, err) {
-    connection.end();
-    if (options.cleanup)
-        console.log('clean');
-    if (err)
-        console.log(err.stack);
-    if (options.exit)
-        process.exit();
 }
-
-//do something when app is closing
-process.on('exit', exitHandler.bind(null, { cleanup: true }));
