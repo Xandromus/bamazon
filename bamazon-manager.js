@@ -78,6 +78,36 @@ function viewLowInventory() {
     });
 }
 
+function addToInventory() {
+    inquirer.prompt([
+        {
+            name: "itemId",
+            message: "Please enter the ID of the product you'd like to adjust"
+        },
+        {
+            name: "newQuantity",
+            message: "Please enter the quantity you'd like to add"
+        }
+    ]).then(function (newInput) {
+        let query = connection.query("SELECT * FROM products WHERE item_id=?", newInput.itemId, function (err, res) {
+            let newSum = parseInt(res[0].stock_quantity) + parseInt(newInput.newQuantity);
+            let query = connection.query(
+                "UPDATE products SET ? WHERE ?",
+                [
+                    {
+                        stock_quantity: newSum
+                    },
+                    {
+                        item_id: newInput.itemId
+                    }
+                ]
+            );
+            console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum);
+            managerMenu();
+        });
+    });
+}
+
 function addNewProduct() {
     inquirer.prompt([
         {
@@ -96,21 +126,21 @@ function addNewProduct() {
             name: "quantity",
             message: "\nPlease enter the new product's quantity on hand"
         }
-    ]).then(function(answers) {
+    ]).then(function (answers) {
         console.log("\nAdding a new product...");
-    var query = connection.query(
-        "INSERT INTO products SET ?",
-        {
-            product_name: answers.productName,
-            department_name: answers.department,
-            price: answers.price,
-            stock_quantity: answers.quantity
-        },
-        function (err, res) {
-            console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + answers.price + " || Quantity on hand: " + answers.quantity);
-            managerMenu();
-        }
-    );
+        var query = connection.query(
+            "INSERT INTO products SET ?",
+            {
+                product_name: answers.productName,
+                department_name: answers.department,
+                price: answers.price,
+                stock_quantity: answers.quantity
+            },
+            function (err, res) {
+                console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + answers.price + " || Quantity on hand: " + answers.quantity);
+                managerMenu();
+            }
+        );
     });
 }
 
