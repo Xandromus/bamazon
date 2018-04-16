@@ -29,7 +29,7 @@ function managerMenu() {
                 "View products for sale",
                 "View low inventory",
                 "Add to inventory",
-                "Add new products",
+                "Add new product",
                 "Exit menu"
             ]
         }
@@ -44,8 +44,8 @@ function managerMenu() {
             case "Add to inventory":
                 addToInventory();
                 break;
-            case "Add new products":
-                addNewProducts();
+            case "Add new product":
+                addNewProduct();
                 break;
             case "Exit menu":
                 exitMenu();
@@ -75,6 +75,42 @@ function viewLowInventory() {
             }
         }
         managerMenu();
+    });
+}
+
+function addNewProduct() {
+    inquirer.prompt([
+        {
+            name: "productName",
+            message: "\nPlease enter the new product's name"
+        },
+        {
+            name: "department",
+            message: "\nPlease enter the new product's department"
+        },
+        {
+            name: "price",
+            message: "\nPlease enter the new product's price (no dollar sign)"
+        },
+        {
+            name: "quantity",
+            message: "\nPlease enter the new product's quantity on hand"
+        }
+    ]).then(function(answers) {
+        console.log("\nAdding a new product...");
+    var query = connection.query(
+        "INSERT INTO products SET ?",
+        {
+            product_name: answers.productName,
+            department_name: answers.department,
+            price: answers.price,
+            stock_quantity: answers.quantity
+        },
+        function (err, res) {
+            console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + answers.price + " || Quantity on hand: " + answers.quantity);
+            managerMenu();
+        }
+    );
     });
 }
 
