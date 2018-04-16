@@ -82,7 +82,16 @@ function addToInventory() {
     inquirer.prompt([
         {
             name: "itemId",
-            message: "Please enter the ID of the product you'd like to adjust"
+            message: "Please enter the ID of the product you'd like to adjust",
+            validate: answer => {
+                let pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                        return true;
+                }
+                return "Please enter a positive number greater than zero.";
+            }
         },
         {
             name: "newQuantity",
@@ -120,11 +129,30 @@ function addNewProduct() {
         },
         {
             name: "price",
-            message: "\nPlease enter the new product's price (no dollar sign)"
+            message: "\nPlease enter the new product's price (no dollar sign)",
+            validate: function(value) {
+              var pass = value.match(
+                /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
+              );
+              if (pass) {
+                return true;
+              }
+        
+              return 'Please enter a valid price (no dollar sign)';
+            }
         },
         {
             name: "quantity",
-            message: "\nPlease enter the new product's quantity on hand"
+            message: "\nPlease enter the new product's quantity on hand",
+            validate: answer => {
+                let pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                        return true;
+                }
+                return "Please enter a positive number greater than zero.";
+            }
         }
     ]).then(function (answers) {
         console.log("\nAdding a new product...");
@@ -137,7 +165,7 @@ function addNewProduct() {
                 stock_quantity: answers.quantity
             },
             function (err, res) {
-                console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + answers.price + " || Quantity on hand: " + answers.quantity);
+                console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + parseFloat(answers.price).toFixed(2) + " || Quantity on hand: " + answers.quantity);
                 managerMenu();
             }
         );

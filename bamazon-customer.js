@@ -32,16 +32,35 @@ function purchaseItem() {
     inquirer.prompt([
         {
             name: "productId",
-            message: "\nPlease enter the ID of the product you'd like to purchase"
+            message: "\nPlease enter the ID of the product you'd like to purchase",
+            validate: answer => {
+                let pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                        return true;
+                }
+                return "Please enter a positive number greater than zero.";
+            }
         },
         {
             name: "quantity",
-            message: "\nHow many would you like to purchase?"
+            message: "\nHow many would you like to purchase?",
+            validate: answer => {
+                let pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                        return true;
+                }
+                return "Please enter a positive number greater than zero.";
+            }
         }
     ]).then(function (input) {
         let query = connection.query("SELECT * FROM products WHERE item_id=?", input.productId, function (err, res) {
             if (input.quantity > res[0].stock_quantity) {
-                console.log("Insufficient quantity!");
+                console.log("We don't have that many in stock. You can order up to " + res[0].stock_quantity);
+                purchaseItem();
             } else {
                 let query = connection.query(
                     "UPDATE products SET ? WHERE ?",
