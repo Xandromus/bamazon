@@ -39,11 +39,11 @@ let connection = mysql.createConnection({
 //         function (err, res) {
 //             console.log(res.affectedRows + " song(s) added!\n");
 //             queryAllSongs();
-            
+
 //         }
 //     );
 //     });
-    
+
 // }
 
 // function updateSong() {
@@ -88,9 +88,8 @@ let connection = mysql.createConnection({
 function displayAllItems() {
     connection.query("SELECT * FROM products", function (err, res) {
         for (var i = 0; i < res.length; i++) {
-            console.log("\n" + "-".repeat(100) + "\n" + res[i].product_name + "\n\nUnique item ID#: " + res[i].item_id + "\n\nDepartment: " + res[i].department_name + "\n\nPrice: " + "$" + res[i].price + "\n\nQuantity on hand: " + res[i].stock_quantity + "\n" + "-".repeat(100));
+            console.log("\n" + "-".repeat(100) + "\n" + res[i].product_name + "\nItem#: " + res[i].item_id + "\n\nPrice: " + "$" + res[i].price.toFixed(2) + "\n" + "-".repeat(100));
         }
-        connection.end();
     });
 }
 
@@ -171,8 +170,48 @@ function displayAllItems() {
 
 connection.connect(function (err) {
     if (err) throw err;
-      console.log("connected as id " + connection.threadId);
-      
+    console.log("connected as id " + connection.threadId);
     displayAllItems();
+    inquirer.prompt([
+        {
+            name: "productId",
+            message: "Please enter the ID of the product you'd like to purchase"
+        },
+        {
+            name: "quantity",
+            message: "How many would you like to purchase?"
+        }
+    ]).then(function (input) {
+        let query = connection.query("SELECT * FROM products WHERE item_id=?", input.productId, function (err, res) {
+            if (input.quantity > res[0].stock_quantity) {
+                console.log("Insufficient quantity!");
+            } else {
+                let query = connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: res[0].stock_quantity - input.quantity
+                        },
+                        {
+                            item_id: input.productId
+                        }
+                    ]
+                );
+                console.log("The total cost for your purchase is $" + (input.quantity * res[0].price).toFixed(2));
+            }
+        });
+    });
 });
 
+function exitHandler(options, err) {
+    connection.end();
+    if (options.cleanup)
+        console.log('clean');
+    if (err)
+        console.log(err.stack);
+    if (options.exit)
+        process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null, { cleanup: true }));
