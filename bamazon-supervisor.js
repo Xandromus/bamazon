@@ -68,6 +68,43 @@ function viewDepartmentSales() {
     });
 }
 
+function createNewDepartment() {
+    console.log("\033c");
+    inquirer.prompt([
+        {
+            name: "department",
+            message: "Please enter the new department's name"
+        },
+        {
+            name: "overhead",
+            message: "Please enter the department's overhead costs (no dollar sign)",
+            validate: function(value) {
+              let pass = value.match(
+                /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
+              );
+              if (pass) {
+                return true;
+              }
+        
+              return 'Please enter a valid cost (no dollar sign)';
+            }
+        }
+    ]).then(function (answers) {
+        console.log("\nAdding a new department...");
+        let query = connection.query(
+            "INSERT INTO departments SET ?",
+            {
+                department_name: answers.department,
+                over_head_costs: answers.overhead
+            },
+            function (err, res) {
+                console.log("\nYou added the following department:" + "\n\n || Department: " + answers.department + " || Overhead costs: " + "$" + parseFloat(answers.overhead).toFixed(2) + "\n");
+                supervisorMenu();
+            }
+        );
+    });
+} 
+
 function exitMenu() {
     console.log("\033c");
     connection.end();

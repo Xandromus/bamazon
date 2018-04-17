@@ -144,7 +144,7 @@ function addNewProduct() {
             name: "price",
             message: "Please enter the new product's price (no dollar sign)",
             validate: function(value) {
-              var pass = value.match(
+              let pass = value.match(
                 /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
               );
               if (pass) {
@@ -169,7 +169,7 @@ function addNewProduct() {
         }
     ]).then(function (answers) {
         console.log("\nAdding a new product...");
-        var query = connection.query(
+        let query = connection.query(
             "INSERT INTO products SET ?",
             {
                 product_name: answers.productName,

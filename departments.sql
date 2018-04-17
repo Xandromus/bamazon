@@ -4,8 +4,7 @@ CREATE TABLE departments (
     `department_id` INTEGER(10) UNSIGNED AUTO_INCREMENT NOT NULL,
     `department_name` VARCHAR(255) NOT NULL,
     `over_head_costs` DECIMAL(10,2) NOT NULL,
-    PRIMARY KEY(department_id),
-    FOREIGN KEY(department_name) REFERENCES products (department_name)
+    PRIMARY KEY(department_id)
 );
 
 INSERT INTO departments (department_name, over_head_costs)
