@@ -15,7 +15,7 @@ let connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    console.log("\033c");
     displayAllItems();
 });
 
@@ -62,18 +62,20 @@ function purchaseItem() {
                 console.log("We don't have that many in stock. You can order up to " + res[0].stock_quantity);
                 purchaseItem();
             } else {
+                let salesTotal = (input.quantity * res[0].price).toFixed(2)
                 let query = connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
                         {
-                            stock_quantity: res[0].stock_quantity - input.quantity
+                            stock_quantity: res[0].stock_quantity - input.quantity,
+                            product_sales: parseFloat(res[0].product_sales) + parseFloat(salesTotal)
                         },
                         {
                             item_id: input.productId
                         }
                     ]
                 );
-                console.log("\nThe total cost for your purchase is $" + (input.quantity * res[0].price).toFixed(2));
+                console.log("\nThe total cost for your purchase is $" + salesTotal);
                 connection.end();
             }
         });

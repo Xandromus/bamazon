@@ -15,7 +15,7 @@ let connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    console.log("\033c");
     managerMenu();
 });
 
@@ -24,7 +24,7 @@ function managerMenu() {
         {
             type: "rawlist",
             name: "functions",
-            message: "\nWhat would you like to do?",
+            message: "What would you like to do?",
             choices: [
                 "View products for sale",
                 "View low inventory",
@@ -55,6 +55,7 @@ function managerMenu() {
 }
 
 function displayAllItems() {
+    console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
         for (let i = 0; i < res.length; i++) {
             console.log("\n || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity);
@@ -64,13 +65,14 @@ function displayAllItems() {
 }
 
 function viewLowInventory() {
+    console.log("\033c");
     connection.query("SELECT * FROM products WHERE stock_quantity<?", 5, function (err, res) {
         if (!res.length) {
-            console.log("\nAll items are stocked at a quantity of 5 or more.");
+            console.log("\nAll items are stocked at a quantity of 5 or more.\n");
         } else {
             for (let i = 0; i < res.length; i++) {
                 if (res[i].stock_quantity < 5) {
-                    console.log("\n || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity);
+                    console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
                 }
             }
         }
@@ -79,6 +81,7 @@ function viewLowInventory() {
 }
 
 function addToInventory() {
+    console.log("\033c");
     inquirer.prompt([
         {
             name: "itemId",
@@ -95,7 +98,16 @@ function addToInventory() {
         },
         {
             name: "newQuantity",
-            message: "Please enter the quantity you'd like to add"
+            message: "Please enter the quantity you'd like to add",
+            validate: answer => {
+                let pass = answer.match(
+                    /^[1-9]\d*$/
+                );
+                if (pass) {
+                        return true;
+                }
+                return "Please enter a positive number greater than zero.";
+            }
         }
     ]).then(function (newInput) {
         let query = connection.query("SELECT * FROM products WHERE item_id=?", newInput.itemId, function (err, res) {
@@ -111,25 +123,26 @@ function addToInventory() {
                     }
                 ]
             );
-            console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum);
+            console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum + "\n");
             managerMenu();
         });
     });
 }
 
 function addNewProduct() {
+    console.log("\033c");
     inquirer.prompt([
         {
             name: "productName",
-            message: "\nPlease enter the new product's name"
+            message: "Please enter the new product's name"
         },
         {
             name: "department",
-            message: "\nPlease enter the new product's department"
+            message: "Please enter the new product's department"
         },
         {
             name: "price",
-            message: "\nPlease enter the new product's price (no dollar sign)",
+            message: "Please enter the new product's price (no dollar sign)",
             validate: function(value) {
               var pass = value.match(
                 /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
@@ -143,7 +156,7 @@ function addNewProduct() {
         },
         {
             name: "quantity",
-            message: "\nPlease enter the new product's quantity on hand",
+            message: "Please enter the new product's quantity on hand",
             validate: answer => {
                 let pass = answer.match(
                     /^[1-9]\d*$/
@@ -165,7 +178,7 @@ function addNewProduct() {
                 stock_quantity: answers.quantity
             },
             function (err, res) {
-                console.log("\nYou added the following item:" + "\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + parseFloat(answers.price).toFixed(2) + " || Quantity on hand: " + answers.quantity);
+                console.log("\nYou added the following item:" + "\n\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + parseFloat(answers.price).toFixed(2) + " || Quantity on hand: " + answers.quantity + "\n");
                 managerMenu();
             }
         );
@@ -173,5 +186,6 @@ function addNewProduct() {
 }
 
 function exitMenu() {
+    console.log("\033c");
     connection.end();
 }
