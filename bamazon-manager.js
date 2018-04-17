@@ -58,7 +58,7 @@ function displayAllItems() {
     console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
         for (let i = 0; i < res.length; i++) {
-            console.log("\n || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity);
+            console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
         }
         managerMenu();
     });

@@ -22,7 +22,7 @@ connection.connect(function (err) {
 function displayAllItems() {
     connection.query("SELECT * FROM products", function (err, res) {
         for (let i = 0; i < res.length; i++) {
-            console.log("\n || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2));
+            console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + "\n");
         }
         purchaseItem();
     });
@@ -32,7 +32,7 @@ function purchaseItem() {
     inquirer.prompt([
         {
             name: "productId",
-            message: "\nPlease enter the ID of the product you'd like to purchase",
+            message: "Please enter the ID of the product you'd like to purchase",
             validate: answer => {
                 let pass = answer.match(
                     /^[1-9]\d*$/
