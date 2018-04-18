@@ -29,7 +29,7 @@ function displayAllItems() {
     console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
         data = [
-            ["Item #", "Product", "Price"]
+            ["Item #".bold, "Product".bold, "Price".bold]
         ];
         let temp = [];
         for (let i = 0; i < res.length; i++) {

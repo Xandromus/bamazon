@@ -107,7 +107,7 @@ function displayAllItems() {
     console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
         data = [
-            ["Item #", "Product", "Price", "Quantity on hand"]
+            ["Item #".bold, "Product".bold, "Price".bold, "Quantity on hand".bold]
         ];
         let temp = [];
         for (let i = 0; i < res.length; i++) {
@@ -132,7 +132,7 @@ function viewLowInventory() {
             console.log("\nAll items are stocked at a quantity of 5 or more.\n");
         } else {
             data = [
-                ["Item #", "Product", "Price", "Quantity on hand"]
+                ["Item #".bold, "Product".bold, "Price".bold, "Quantity on hand".bold]
             ];
             let temp = [];
             for (let i = 0; i < res.length; i++) {
@@ -202,7 +202,7 @@ function addToInventory() {
                 );
                 console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:\n");
                 data = [
-                    ["Product", "Department", "Price", "Quantity on hand"],
+                    ["Product".bold, "Department".bold, "Price".bold, "Quantity on hand".bold],
                     [res[0].product_name, res[0].department_name, "$" + res[0].price.toFixed(2), newSum]
                 ];
 
@@ -269,7 +269,7 @@ function addNewProduct() {
                 console.log("\nYou added the following item:\n");
                 
                 data = [
-                    ["Product", "Department", "Price", "Quantity on hand"],
+                    ["Product".bold, "Department".bold, "Price".bold, "Quantity on hand".bold],
                     [answers.productName, answers.department, "$" + parseFloat(answers.price).toFixed(2), answers.quantity]
                 ];
 

@@ -54,7 +54,7 @@ function supervisorMenu() {
 
 function viewDepartmentSales() {
     console.log("\033c");
-    console.log("NOTE: These are only the departments with products listed in the system. If you add a new department, a manager must add a product before the department can appear here.\n");
+    console.log("\nNOTE: These are only the departments with products listed in the system.\n\nIf you add a new department, a manager must add a product before the department can appear here.\n".white.bold.bgRed);
     let query = `
         SELECT 
           d.department_id, 
@@ -68,7 +68,7 @@ function viewDepartmentSales() {
         ORDER BY d.department_id`
         connection.query(query, function(err, res) {
             data = [
-                ["Department ID", "Department Name", "Overhead Costs","Product Sales", "Total Profit"]
+                ["Department ID".bold, "Department Name".bold, "Overhead Costs".bold,"Product Sales".bold, "Total Profit".bold]
             ];
             let temp = [];
         for (let i = 0; i < res.length; i++) {
@@ -161,7 +161,7 @@ function createNewDepartment() {
                 console.log("\nYou added the following department:\n");
                 
                 data = [
-                    ["Department", "Overhead costs"],
+                    ["Department".bold, "Overhead costs".bold],
                     [answers.department, "$" + parseFloat(answers.overhead).toFixed(2)]
                 ];
 
