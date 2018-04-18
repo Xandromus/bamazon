@@ -2,6 +2,10 @@ let mysql = require("mysql");
 let inquirer = require("inquirer");
 let table = require("table");
 
+let config,
+    data,
+    output;
+
 let connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -61,9 +65,65 @@ function viewDepartmentSales() {
         GROUP BY d.department_name
         ORDER BY d.department_id`
         connection.query(query, function(err, res) {
+            data = [
+                ["Department ID", "Department Name", "Overhead Costs","Product Sales", "Total Profit"]
+            ];
+            let temp = [];
         for (let i = 0; i < res.length; i++) {
-            console.log("|| " + res[i].department_id + " || " + res[i].department_name + " || $" + res[i].over_head_costs.toFixed(2) + " || $" + res[i].total_sales.toFixed(2) + " || $" + (res[i].total_sales - res[i].over_head_costs).toFixed(2) + "\n");
+            temp = [res[i].department_id, res[i].department_name, "$" + res[i].over_head_costs.toFixed(2), "$" + res[i].total_sales.toFixed(2), "$" + (res[i].total_sales - res[i].over_head_costs).toFixed(2)];
+            data.push(temp);
         }
+
+        
+
+        config = {
+            columns: {
+                0: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                1: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                2: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                3: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                4: {
+                    alignment: 'right',
+                    minWidth: 10
+                }
+            },
+            border: {
+                topBody: `─`,
+                topJoin: `┬`,
+                topLeft: `┌`,
+                topRight: `┐`,
+         
+                bottomBody: `─`,
+                bottomJoin: `┴`,
+                bottomLeft: `└`,
+                bottomRight: `┘`,
+         
+                bodyLeft: `│`,
+                bodyRight: `│`,
+                bodyJoin: `│`,
+         
+                joinBody: `─`,
+                joinLeft: `├`,
+                joinRight: `┤`,
+                joinJoin: `┼`
+            }
+        };
+
+        output = table.table(data, config);
+ 
+        console.log(output);
         supervisorMenu();
     });
 }
