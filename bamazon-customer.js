@@ -99,7 +99,7 @@ function purchaseItem() {
         },
         {
             name: "quantity",
-            message: "\nHow many would you like to purchase?",
+            message: "How many would you like to purchase?",
             validate: answer => {
                 let pass = answer.match(
                     /^[1-9]\d*$/

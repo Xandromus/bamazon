@@ -54,6 +54,7 @@ function supervisorMenu() {
 
 function viewDepartmentSales() {
     console.log("\033c");
+    console.log("NOTE: These are only the departments with products listed in the system. If you add a new department, a manager must add a product before the department can appear here.\n");
     let query = `
         SELECT 
           d.department_id, 
@@ -157,7 +158,50 @@ function createNewDepartment() {
                 over_head_costs: answers.overhead
             },
             function (err, res) {
-                console.log("\nYou added the following department:" + "\n\n || Department: " + answers.department + " || Overhead costs: " + "$" + parseFloat(answers.overhead).toFixed(2) + "\n");
+                console.log("\nYou added the following department:\n");
+                
+                data = [
+                    ["Department", "Overhead costs"],
+                    [answers.department, "$" + parseFloat(answers.overhead).toFixed(2)]
+                ];
+
+                config = {
+                    columns: {
+                        0: {
+                            alignment: 'left',
+                            minWidth: 10
+                        },
+                        1: {
+                            alignment: 'right',
+                            minWidth: 10
+                        }
+                    },
+                    border: {
+                        topBody: `─`,
+                        topJoin: `┬`,
+                        topLeft: `┌`,
+                        topRight: `┐`,
+                 
+                        bottomBody: `─`,
+                        bottomJoin: `┴`,
+                        bottomLeft: `└`,
+                        bottomRight: `┘`,
+                 
+                        bodyLeft: `│`,
+                        bodyRight: `│`,
+                        bodyJoin: `│`,
+                 
+                        joinBody: `─`,
+                        joinLeft: `├`,
+                        joinRight: `┤`,
+                        joinJoin: `┼`
+                    }
+                };
+
+                output = table.table(data, config);
+     
+                console.log(output.white.bgBlue);
+
                 supervisorMenu();
             }
         );

@@ -266,7 +266,6 @@ function addNewProduct() {
                 product_sales: 0
             },
             function (err, res) {
-                console.log(err);
                 console.log("\nYou added the following item:\n");
                 
                 data = [
