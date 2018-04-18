@@ -1,3 +1,4 @@
+require("dotenv").config();
 let mysql = require("mysql");
 let inquirer = require("inquirer");
 let colors = require('colors');
@@ -15,7 +16,7 @@ let connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "RoseWhale53",
+    password: process.env.MYSQLPASSWORD,
     database: "bamazon"
 });
 
