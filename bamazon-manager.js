@@ -1,5 +1,12 @@
 let mysql = require("mysql");
 let inquirer = require("inquirer");
+let colors = require('colors');
+let table = require("table");
+
+let config,
+    data,
+    output;
+
 let retry = false;
 
 let connection = mysql.createConnection({
@@ -19,6 +26,47 @@ connection.connect(function (err) {
     console.log("\033c");
     managerMenu();
 });
+
+config = {
+    columns: {
+        0: {
+            alignment: 'left',
+            minWidth: 10
+        },
+        1: {
+            alignment: 'left',
+            minWidth: 10
+        },
+        2: {
+            alignment: 'left',
+            minWidth: 10
+        },
+        3: {
+            alignment: 'right',
+            minWidth: 10
+        }
+    },
+    border: {
+        topBody: `─`,
+        topJoin: `┬`,
+        topLeft: `┌`,
+        topRight: `┐`,
+ 
+        bottomBody: `─`,
+        bottomJoin: `┴`,
+        bottomLeft: `└`,
+        bottomRight: `┘`,
+ 
+        bodyLeft: `│`,
+        bodyRight: `│`,
+        bodyJoin: `│`,
+ 
+        joinBody: `─`,
+        joinLeft: `├`,
+        joinRight: `┤`,
+        joinJoin: `┼`
+    }
+};
 
 function managerMenu() {
     inquirer.prompt([
@@ -58,9 +106,21 @@ function managerMenu() {
 function displayAllItems() {
     console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
+        data = [
+            ["Item #", "Product", "Price", "Quantity on hand"]
+        ];
+        let temp = [];
         for (let i = 0; i < res.length; i++) {
-            console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
+            temp = [res[i].item_id, res[i].product_name, "$" + res[i].price.toFixed(2), res[i].stock_quantity];
+            data.push(temp);
         }
+
+        
+
+        output = table.table(data, config);
+ 
+        console.log(output.white.bgBlue);
+
         managerMenu();
     });
 }
@@ -71,9 +131,19 @@ function viewLowInventory() {
         if (!res.length) {
             console.log("\nAll items are stocked at a quantity of 5 or more.\n");
         } else {
+            data = [
+                ["Item #", "Product", "Price", "Quantity on hand"]
+            ];
+            let temp = [];
             for (let i = 0; i < res.length; i++) {
-                console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
+                temp = [res[i].item_id, res[i].product_name, "$" + res[i].price.toFixed(2), res[i].stock_quantity];
+                data.push(temp);
             }
+
+            
+            output = table.table(data, config);
+ 
+        console.log(output.white.bgBlue);
         }
         managerMenu();
     });
@@ -130,7 +200,16 @@ function addToInventory() {
                         }
                     ]
                 );
-                console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum + "\n");
+                console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:\n");
+                data = [
+                    ["Product", "Department", "Price", "Quantity on hand"],
+                    [res[0].product_name, res[0].department_name, "$" + res[0].price.toFixed(2), newSum]
+                ];
+
+                output = table.table(data, config);
+     
+                console.log(output.white.bgBlue);
+
                 managerMenu();
             }
         });
@@ -183,10 +262,22 @@ function addNewProduct() {
                 product_name: answers.productName,
                 department_name: answers.department,
                 price: answers.price,
-                stock_quantity: answers.quantity
+                stock_quantity: answers.quantity,
+                product_sales: 0
             },
             function (err, res) {
-                console.log("\nYou added the following item:" + "\n\n || " + answers.productName + " || Department: " + answers.department + " || Price: " + "$" + parseFloat(answers.price).toFixed(2) + " || Quantity on hand: " + answers.quantity + "\n");
+                console.log(err);
+                console.log("\nYou added the following item:\n");
+                
+                data = [
+                    ["Product", "Department", "Price", "Quantity on hand"],
+                    [answers.productName, answers.department, "$" + parseFloat(answers.price).toFixed(2), answers.quantity]
+                ];
+
+                output = table.table(data, config);
+     
+                console.log(output.white.bgBlue);
+                
                 managerMenu();
             }
         );
