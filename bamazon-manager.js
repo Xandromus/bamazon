@@ -1,5 +1,6 @@
 let mysql = require("mysql");
 let inquirer = require("inquirer");
+let retry = false;
 
 let connection = mysql.createConnection({
     host: "localhost",
@@ -71,9 +72,7 @@ function viewLowInventory() {
             console.log("\nAll items are stocked at a quantity of 5 or more.\n");
         } else {
             for (let i = 0; i < res.length; i++) {
-                if (res[i].stock_quantity < 5) {
-                    console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
-                }
+                console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + " || Quantity on hand: " + res[i].stock_quantity + "\n");
             }
         }
         managerMenu();
@@ -82,6 +81,10 @@ function viewLowInventory() {
 
 function addToInventory() {
     console.log("\033c");
+    if (retry) {
+        console.log("Invalid product ID. Please choose again\n");
+    }
+    retry = false;
     inquirer.prompt([
         {
             name: "itemId",
@@ -91,7 +94,7 @@ function addToInventory() {
                     /^[1-9]\d*$/
                 );
                 if (pass) {
-                        return true;
+                    return true;
                 }
                 return "Please enter a positive number greater than zero.";
             }
@@ -104,27 +107,32 @@ function addToInventory() {
                     /^[1-9]\d*$/
                 );
                 if (pass) {
-                        return true;
+                    return true;
                 }
                 return "Please enter a positive number greater than zero.";
             }
         }
     ]).then(function (newInput) {
         let query = connection.query("SELECT * FROM products WHERE item_id=?", newInput.itemId, function (err, res) {
-            let newSum = parseInt(res[0].stock_quantity) + parseInt(newInput.newQuantity);
-            let query = connection.query(
-                "UPDATE products SET ? WHERE ?",
-                [
-                    {
-                        stock_quantity: newSum
-                    },
-                    {
-                        item_id: newInput.itemId
-                    }
-                ]
-            );
-            console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum + "\n");
-            managerMenu();
+            if (!res.length) {
+                retry = true;
+                addToInventory();
+            } else {
+                let newSum = parseInt(res[0].stock_quantity) + parseInt(newInput.newQuantity);
+                let query = connection.query(
+                    "UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity: newSum
+                        },
+                        {
+                            item_id: newInput.itemId
+                        }
+                    ]
+                );
+                console.log("\nYou added a quantity of " + newInput.newQuantity + " to update the item to the following:" + "\n\n || " + res[0].product_name + " || Department: " + res[0].department_name + " || Price: " + "$" + res[0].price + " || Quantity on hand: " + newSum + "\n");
+                managerMenu();
+            }
         });
     });
 }
@@ -143,15 +151,15 @@ function addNewProduct() {
         {
             name: "price",
             message: "Please enter the new product's price (no dollar sign)",
-            validate: function(value) {
-              let pass = value.match(
-                /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
-              );
-              if (pass) {
-                return true;
-              }
-        
-              return 'Please enter a valid price (no dollar sign)';
+            validate: function (value) {
+                let pass = value.match(
+                    /^[+-]?[1-9][0-9]{0,2}(?:(,[0-9]{3})*|([0-9]{3})*)(?:\.[0-9]{2})?$/
+                );
+                if (pass) {
+                    return true;
+                }
+
+                return 'Please enter a valid price (no dollar sign)';
             }
         },
         {
@@ -162,7 +170,7 @@ function addNewProduct() {
                     /^[1-9]\d*$/
                 );
                 if (pass) {
-                        return true;
+                    return true;
                 }
                 return "Please enter a positive number greater than zero.";
             }

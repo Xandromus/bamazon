@@ -20,6 +20,7 @@ connection.connect(function (err) {
 });
 
 function displayAllItems() {
+    console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
         for (let i = 0; i < res.length; i++) {
             console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + "\n");
@@ -38,7 +39,7 @@ function purchaseItem() {
                     /^[1-9]\d*$/
                 );
                 if (pass) {
-                        return true;
+                    return true;
                 }
                 return "Please enter a positive number greater than zero.";
             }
@@ -51,32 +52,37 @@ function purchaseItem() {
                     /^[1-9]\d*$/
                 );
                 if (pass) {
-                        return true;
+                    return true;
                 }
                 return "Please enter a positive number greater than zero.";
             }
         }
     ]).then(function (input) {
         let query = connection.query("SELECT * FROM products WHERE item_id=?", input.productId, function (err, res) {
-            if (input.quantity > res[0].stock_quantity) {
-                console.log("We don't have that many in stock. You can order up to " + res[0].stock_quantity);
+            if (!res.length) {
+                console.log("\nInvalid product ID. Please choose again\n");
                 purchaseItem();
             } else {
-                let salesTotal = (input.quantity * res[0].price).toFixed(2)
-                let query = connection.query(
-                    "UPDATE products SET ? WHERE ?",
-                    [
-                        {
-                            stock_quantity: res[0].stock_quantity - input.quantity,
-                            product_sales: parseFloat(res[0].product_sales) + parseFloat(salesTotal)
-                        },
-                        {
-                            item_id: input.productId
-                        }
-                    ]
-                );
-                console.log("\nThe total cost for your purchase is $" + salesTotal);
-                connection.end();
+                if (input.quantity > res[0].stock_quantity) {
+                    console.log("We don't have that many in stock. You can order up to " + res[0].stock_quantity);
+                    purchaseItem();
+                } else {
+                    let salesTotal = (input.quantity * res[0].price).toFixed(2)
+                    let query = connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: res[0].stock_quantity - input.quantity,
+                                product_sales: parseFloat(res[0].product_sales) + parseFloat(salesTotal)
+                            },
+                            {
+                                item_id: input.productId
+                            }
+                        ]
+                    );
+                    console.log("\nThe total cost for your purchase is $" + salesTotal);
+                    connection.end();
+                }
             }
         });
     });
