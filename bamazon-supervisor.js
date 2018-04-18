@@ -1,5 +1,6 @@
 let mysql = require("mysql");
 let inquirer = require("inquirer");
+let colors = require('colors');
 let table = require("table");
 
 let config,
@@ -74,8 +75,6 @@ function viewDepartmentSales() {
             data.push(temp);
         }
 
-        
-
         config = {
             columns: {
                 0: {
@@ -123,7 +122,7 @@ function viewDepartmentSales() {
 
         output = table.table(data, config);
  
-        console.log(output);
+        console.log(output.white.bgBlue);
         supervisorMenu();
     });
 }

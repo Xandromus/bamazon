@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Xandromus/bamazon#readme",
   "dependencies": {
+    "colors": "^1.2.1",
     "inquirer": "^5.2.0",
     "mysql": "^2.15.0",
     "node-cmd": "^3.0.0",

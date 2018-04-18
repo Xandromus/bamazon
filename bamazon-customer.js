@@ -1,5 +1,11 @@
 let mysql = require("mysql");
 let inquirer = require("inquirer");
+let colors = require('colors');
+let table = require("table");
+
+let config,
+    data,
+    output;
 
 let connection = mysql.createConnection({
     host: "localhost",
@@ -22,9 +28,56 @@ connection.connect(function (err) {
 function displayAllItems() {
     console.log("\033c");
     connection.query("SELECT * FROM products", function (err, res) {
+        data = [
+            ["Item #", "Product", "Price"]
+        ];
+        let temp = [];
         for (let i = 0; i < res.length; i++) {
-            console.log(" || " + res[i].product_name + " || Item #: " + res[i].item_id + " || Price: " + "$" + res[i].price.toFixed(2) + "\n");
+            temp = [res[i].item_id, res[i].product_name, "$" + res[i].price.toFixed(2)];
+            data.push(temp);
         }
+
+        config = {
+            columns: {
+                0: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                1: {
+                    alignment: 'left',
+                    minWidth: 10
+                },
+                2: {
+                    alignment: 'right',
+                    minWidth: 10
+                }
+            },
+            border: {
+                topBody: `─`,
+                topJoin: `┬`,
+                topLeft: `┌`,
+                topRight: `┐`,
+         
+                bottomBody: `─`,
+                bottomJoin: `┴`,
+                bottomLeft: `└`,
+                bottomRight: `┘`,
+         
+                bodyLeft: `│`,
+                bodyRight: `│`,
+                bodyJoin: `│`,
+         
+                joinBody: `─`,
+                joinLeft: `├`,
+                joinRight: `┤`,
+                joinJoin: `┼`
+            }
+        };
+
+        output = table.table(data, config);
+ 
+        console.log(output.white.bgBlue);
+
         purchaseItem();
     });
 }
