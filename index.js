@@ -1,10 +1,16 @@
 let inquirer = require("inquirer");
+let figlet = require("figlet");
+let colors = require('colors');
 let Customer = require("./bamazon-customer.js");
 let Manager = require("./bamazon-manager.js");
 let Supervisor = require("./bamazon-supervisor.js");
 
 function bamazonMenu() {
     console.log("\033c");
+    console.log(
+        figlet.textSync("BAMAZON", { font: "Isometric3", horizontalLayout: "full" }).cyan.bold
+    );
+    console.log("\n Welcome to Bamazon!\n");
     inquirer.prompt([
         {
             type: "rawlist",
