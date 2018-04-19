@@ -4,6 +4,7 @@ function bamazonCustomer() {
     let inquirer = require("inquirer");
     let colors = require('colors');
     let table = require("table");
+    let Menu = require("./index.js");
 
     let config,
         data,

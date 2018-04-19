@@ -4,6 +4,7 @@ function bamazonManager() {
     let inquirer = require("inquirer");
     let colors = require('colors');
     let table = require("table");
+    let Menu = require("./index.js");
 
     let config,
         data,
@@ -81,6 +82,7 @@ function bamazonManager() {
                     "View low inventory",
                     "Add to inventory",
                     "Add new product",
+                    "Back to role menu",
                     "Exit menu"
                 ]
             }
@@ -97,6 +99,10 @@ function bamazonManager() {
                     break;
                 case "Add new product":
                     addNewProduct();
+                    break;
+                case "Back to role menu":
+                    connection.end();
+                    Menu.bamazonMenu();
                     break;
                 case "Exit menu":
                     exitMenu();

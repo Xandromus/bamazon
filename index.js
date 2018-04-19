@@ -4,6 +4,7 @@ let Manager = require("./bamazon-manager.js");
 let Supervisor = require("./bamazon-supervisor.js");
 
 function bamazonMenu() {
+    console.log("\033c");
     inquirer.prompt([
         {
             type: "rawlist",
@@ -28,6 +29,7 @@ function bamazonMenu() {
                 Supervisor.bamazonSupervisor();
                 break;
             case "Exit menu":
+                console.log("\033c");
                 return;
                 break;
         }
@@ -35,3 +37,5 @@ function bamazonMenu() {
 }
 
 bamazonMenu();
+
+module.exports.bamazonMenu = bamazonMenu;

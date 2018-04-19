@@ -4,6 +4,7 @@ function bamazonSupervisor() {
     let inquirer = require("inquirer");
     let colors = require('colors');
     let table = require("table");
+    let Menu = require("./index.js");
 
     let config,
         data,
@@ -36,6 +37,7 @@ function bamazonSupervisor() {
                 choices: [
                     "View product sales by department",
                     "Create new department",
+                    "Back to role menu",
                     "Exit menu"
                 ]
             }
@@ -46,6 +48,10 @@ function bamazonSupervisor() {
                     break;
                 case "Create new department":
                     createNewDepartment();
+                    break;
+                case "Back to role menu":
+                    connection.end();
+                    Menu.bamazonMenu();
                     break;
                 case "Exit menu":
                     exitMenu();
