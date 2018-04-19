@@ -28,6 +28,43 @@ function bamazonCustomer() {
         customerMenu();
     });
 
+    config = {
+        columns: {
+            0: {
+                alignment: 'left',
+                minWidth: 10
+            },
+            1: {
+                alignment: 'left',
+                minWidth: 10
+            },
+            2: {
+                alignment: 'right',
+                minWidth: 10
+            }
+        },
+        border: {
+            topBody: `─`,
+            topJoin: `┬`,
+            topLeft: `┌`,
+            topRight: `┐`,
+
+            bottomBody: `─`,
+            bottomJoin: `┴`,
+            bottomLeft: `└`,
+            bottomRight: `┘`,
+
+            bodyLeft: `│`,
+            bodyRight: `│`,
+            bodyJoin: `│`,
+
+            joinBody: `─`,
+            joinLeft: `├`,
+            joinRight: `┤`,
+            joinJoin: `┼`
+        }
+    };
+
     function customerMenu() {
         console.log("\033c");
         inquirer.prompt([
@@ -72,43 +109,6 @@ function bamazonCustomer() {
                 temp = [res[i].item_id, res[i].product_name, "$" + res[i].price.toFixed(2)];
                 data.push(temp);
             }
-
-            config = {
-                columns: {
-                    0: {
-                        alignment: 'left',
-                        minWidth: 10
-                    },
-                    1: {
-                        alignment: 'left',
-                        minWidth: 10
-                    },
-                    2: {
-                        alignment: 'right',
-                        minWidth: 10
-                    }
-                },
-                border: {
-                    topBody: `─`,
-                    topJoin: `┬`,
-                    topLeft: `┌`,
-                    topRight: `┐`,
-
-                    bottomBody: `─`,
-                    bottomJoin: `┴`,
-                    bottomLeft: `└`,
-                    bottomRight: `┘`,
-
-                    bodyLeft: `│`,
-                    bodyRight: `│`,
-                    bodyJoin: `│`,
-
-                    joinBody: `─`,
-                    joinLeft: `├`,
-                    joinRight: `┤`,
-                    joinJoin: `┼`
-                }
-            };
 
             output = table.table(data, config);
 
@@ -175,7 +175,16 @@ function bamazonCustomer() {
                                 }
                             ]
                         );
-                        console.log("\nThe total cost for your purchase is $" + salesTotal);
+                        data = [
+                            ["Product".bold, "Price".bold, "Total".bold],
+                            [res[0].product_name, "$" + res[0].price.toFixed(2), "$" + salesTotal]
+                        ];
+
+                        console.log("\nYou bought the following:\n");
+
+                        output = table.table(data, config);
+
+                        console.log(output.white.bgBlue);
                         console.log("\nPress any key to return to the menu");
                         process.stdin.setRawMode(true);
                         process.stdin.resume();
