@@ -1,5 +1,7 @@
 let inquirer = require("inquirer");
-let cmd = require('node-cmd');
+let Customer = require("./bamazon-customer.js");
+let Manager = require("./bamazon-manager.js");
+let Supervisor = require("./bamazon-supervisor.js");
 
 function bamazonMenu() {
     inquirer.prompt([
@@ -17,13 +19,13 @@ function bamazonMenu() {
     ]).then(function (userChoice) {
         switch (userChoice.functions) {
             case "Customer":
-                cmd.run('node bamazon-customer');
+                Customer.bamazonCustomer();
                 break;
             case "Manager":
-                cmd.run('node bamazon-manager');
+                Manager.bamazonManager();
                 break;
             case "Supervisor":
-                cmd.run('node bamazon-supervisor');
+                Supervisor.bamazonSupervisor();
                 break;
             case "Exit menu":
                 return;
