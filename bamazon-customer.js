@@ -25,8 +25,41 @@ function bamazonCustomer() {
     connection.connect(function (err) {
         if (err) throw err;
         console.log("\033c");
-        displayAllItems();
+        customerMenu();
     });
+
+    function customerMenu() {
+        console.log("\033c");
+        inquirer.prompt([
+            {
+                type: "rawlist",
+                name: "functions",
+                message: "What would you like to do?",
+                choices: [
+                    "View products for sale",
+                    "Make a purchase",
+                    "Back to role menu",
+                    "Exit menu"
+                ]
+            }
+        ]).then(function (userChoice) {
+            switch (userChoice.functions) {
+                case "View products for sale":
+                    displayAllItems();
+                    break;
+                case "Make a purchase":
+                    purchaseItem();
+                    break;
+                case "Back to role menu":
+                    connection.end();
+                    Menu.bamazonMenu();
+                    break;
+                case "Exit menu":
+                    exitMenu();
+                    break;
+            }
+        });
+    }
 
     function displayAllItems() {
         console.log("\033c");
@@ -81,7 +114,13 @@ function bamazonCustomer() {
 
             console.log(output.white.bgBlue);
 
-            purchaseItem();
+            console.log("\nPress any key to return to the menu");
+            process.stdin.setRawMode(true);
+            process.stdin.resume();
+            process.stdin.once('data', function () {
+                customerMenu();
+                process.exit.bind(process, 0);
+            });
         });
     }
 
@@ -137,11 +176,22 @@ function bamazonCustomer() {
                             ]
                         );
                         console.log("\nThe total cost for your purchase is $" + salesTotal);
-                        connection.end();
+                        console.log("\nPress any key to return to the menu");
+                        process.stdin.setRawMode(true);
+                        process.stdin.resume();
+                        process.stdin.once('data', function () {
+                            customerMenu();
+                            process.exit.bind(process, 0);
+                        });
                     }
                 }
             });
         });
+    }
+
+    function exitMenu() {
+        console.log("\033c");
+        connection.end();
     }
 }
 
