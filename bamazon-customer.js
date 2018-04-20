@@ -33,44 +33,6 @@ function bamazonCustomer() {
         customerMenu();
     });
 
-    // set up configuration for table package
-    config = {
-        columns: {
-            0: {
-                alignment: 'left',
-                minWidth: 10
-            },
-            1: {
-                alignment: 'left',
-                minWidth: 10
-            },
-            2: {
-                alignment: 'right',
-                minWidth: 10
-            }
-        },
-        border: {
-            topBody: `─`,
-            topJoin: `┬`,
-            topLeft: `┌`,
-            topRight: `┐`,
-
-            bottomBody: `─`,
-            bottomJoin: `┴`,
-            bottomLeft: `└`,
-            bottomRight: `┘`,
-
-            bodyLeft: `│`,
-            bodyRight: `│`,
-            bodyJoin: `│`,
-
-            joinBody: `─`,
-            joinLeft: `├`,
-            joinRight: `┤`,
-            joinJoin: `┼`
-        }
-    };
-
     // customer menu
     function customerMenu() {
         console.log("\033c");
@@ -124,6 +86,44 @@ function bamazonCustomer() {
                 temp = [res[i].item_id, res[i].product_name, "$" + res[i].price.toFixed(2)];
                 data.push(temp);
             }
+
+            // set up configuration for table package
+            config = {
+                columns: {
+                    0: {
+                        alignment: 'left',
+                        minWidth: 10
+                    },
+                    1: {
+                        alignment: 'left',
+                        minWidth: 10
+                    },
+                    2: {
+                        alignment: 'right',
+                        minWidth: 10
+                    }
+                },
+                border: {
+                    topBody: `─`,
+                    topJoin: `┬`,
+                    topLeft: `┌`,
+                    topRight: `┐`,
+
+                    bottomBody: `─`,
+                    bottomJoin: `┴`,
+                    bottomLeft: `└`,
+                    bottomRight: `┘`,
+
+                    bodyLeft: `│`,
+                    bodyRight: `│`,
+                    bodyJoin: `│`,
+
+                    joinBody: `─`,
+                    joinLeft: `├`,
+                    joinRight: `┤`,
+                    joinJoin: `┼`
+                }
+            };
 
             // print the table
             output = table.table(data, config);
@@ -208,9 +208,51 @@ function bamazonCustomer() {
 
                         // array to hold table package information. Displays the purchased item and sales total to the user
                         data = [
-                            ["Product".bold, "Price".bold, "Total".bold],
-                            [res[0].product_name, "$" + res[0].price.toFixed(2), "$" + salesTotal]
+                            ["Product".bold, "Price".bold, "Quantity".bold, "Total".bold],
+                            [res[0].product_name, "$" + res[0].price.toFixed(2), input.quantity, "$" + salesTotal]
                         ];
+
+                        // set up configuration for table package
+                        config = {
+                            columns: {
+                                0: {
+                                    alignment: 'left',
+                                    minWidth: 10
+                                },
+                                1: {
+                                    alignment: 'left',
+                                    minWidth: 10
+                                },
+                                2: {
+                                    alignment: 'left',
+                                    minWidth: 10
+                                },
+                                3: {
+                                    alignment: 'right',
+                                    minWidth: 10
+                                }
+                            },
+                            border: {
+                                topBody: `─`,
+                                topJoin: `┬`,
+                                topLeft: `┌`,
+                                topRight: `┐`,
+
+                                bottomBody: `─`,
+                                bottomJoin: `┴`,
+                                bottomLeft: `└`,
+                                bottomRight: `┘`,
+
+                                bodyLeft: `│`,
+                                bodyRight: `│`,
+                                bodyJoin: `│`,
+
+                                joinBody: `─`,
+                                joinLeft: `├`,
+                                joinRight: `┤`,
+                                joinJoin: `┼`
+                            }
+                        };
 
                         console.log("\nYou bought the following:\n");
 

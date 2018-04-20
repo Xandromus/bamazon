@@ -14,7 +14,7 @@ Bamazon accesses 2 tables within the database: departments and products. Users a
 Customers have 4 options:
 
 1. View all products available to purchase, including the product id, product name, and price.
-2. Purchase a product by entering the product id and quantity desired. The quantity and total sales for this product are then updated in the products database.
+2. Purchase a product by entering the product id and quantity desired. The quantity and total sales for this product are then updated in the products database, and the purchased item's information is printed to the screen, including product name, price, quantity purchased, and total cost of the purchase.
 3. Return to role menu.
 4. Exit the app.
 
