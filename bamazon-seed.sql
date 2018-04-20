@@ -1,3 +1,13 @@
+INSERT INTO `departments` (`department_name`, `over_head_costs`)
+VALUES
+    ("Automotive", 5000),
+    ("Bedding", 4000),
+    ("Dishes", 1000),
+    ("Electronics", 10000),
+    ("Footwear", 5000),
+    ("Men's Clothing", 8000),
+    ("Toys", 5000);
+
 INSERT INTO `products` (`product_name`, `department_name`, `price`, `stock_quantity`, `product_sales`)
 VALUES
     ("Bose SoundLink Color Bluetooth Speaker", "Electronics", 129.00, 12, 0),
@@ -12,13 +22,3 @@ VALUES
     ("Bachmann Trains Thomas and Friends - James the Red Engine", "Toys", 55.96, 10, 0),
     ("AstroAI Digital Tire Pressure Gauge", "Automotive", 8.47, 13, 0),
     ("Tan Converse All-Star Low-Top Shoes", "Footwear", 49.99, 4, 0);
-
-INSERT INTO `departments` (`department_name`, `over_head_costs`)
-VALUES
-    ("Automotive", 5000),
-    ("Bedding", 4000),
-    ("Dishes", 1000),
-    ("Electronics", 10000),
-    ("Footwear", 5000),
-    ("Men's Clothing", 8000),
-    ("Toys", 5000);
