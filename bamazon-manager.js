@@ -263,29 +263,45 @@ function bamazonManager() {
                 }
             }
         ]).then(function (answers) {
-            console.log("\nAdding a new product...");
-            let query = connection.query(
-                "INSERT INTO products SET ?",
-                {
-                    product_name: answers.productName,
-                    department_name: answers.department,
-                    price: answers.price,
-                    stock_quantity: answers.quantity,
-                    product_sales: 0
-                },
-                function (err, res) {
-                    console.log("\nYou added the following item:\n");
+            connection.query(
+                "SELECT * FROM departments WHERE department_name=?", answers.department, function (err, res) {
+                    if (!res.length) {
+                        console.log("\nThat department doesn't exist yet. Either add an item to an existing department or have a supervisor create a new department.".white.bgRed);
+                        console.log("\nPress any key to return to the menu");
+                        process.stdin.setRawMode(true);
+                        process.stdin.resume();
+                        process.stdin.once('data', function () {
+                            console.log("\033c");
+                            managerMenu();
+                            process.exit.bind(process, 0);
+                        });
+                    } else {
+                        console.log("\nAdding a new product...");
+                        let query = connection.query(
+                            "INSERT INTO products SET ?",
+                            {
+                                product_name: answers.productName,
+                                department_name: answers.department,
+                                price: answers.price,
+                                stock_quantity: answers.quantity,
+                                product_sales: 0
+                            },
+                            function (err, res) {
+                                console.log("\nYou added the following item:\n");
 
-                    data = [
-                        ["Product".bold, "Department".bold, "Price".bold, "Quantity on hand".bold],
-                        [answers.productName, answers.department, "$" + parseFloat(answers.price).toFixed(2), answers.quantity]
-                    ];
+                                data = [
+                                    ["Product".bold, "Department".bold, "Price".bold, "Quantity on hand".bold],
+                                    [answers.productName, answers.department, "$" + parseFloat(answers.price).toFixed(2), answers.quantity]
+                                ];
 
-                    output = table.table(data, config);
+                                output = table.table(data, config);
 
-                    console.log(output.white.bgBlue);
+                                console.log(output.white.bgBlue);
 
-                    managerMenu();
+                                managerMenu();
+                            }
+                        );
+                    }
                 }
             );
         });
