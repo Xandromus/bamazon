@@ -4,7 +4,7 @@
 
 Bamazon is a command line node app that emulates an online store, complete with access to a real-time database. The app offers users 3 roles: customer, manager, and supervisor.
 
-**Watch the [demo](https://youtu.be/Ko80nFRN-I0)**
+**Watch the [demo](https://youtu.be/nOs25jQ7w8Q)**
 
 
 ## Description
