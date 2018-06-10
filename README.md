@@ -1,6 +1,6 @@
 # Bamazon
 
-![Bamazon](https://github.com/Xandromus/bamazon/blob/master/bamazon.png)
+![Bamazon](https://github.com/Xandromus/bamazon/blob/master/bamazon.gif)
 
 Bamazon is a command line node app that emulates an online store, complete with access to a real-time database. The app offers users 3 roles: customer, manager, and supervisor.
 
